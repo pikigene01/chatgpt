@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 
 function ChatBot() {
   const [chatHistory, setChatHistory] = useState([]);
   const [inputValue, setInputValue] = useState('');
+
+
+  useEffect(() => {
+  alert(process.env.REACT_APP_OPENAI_API_KEY);
+  }, [])
 
   const sendMessage = async () => {
     // Add user message to chat history
