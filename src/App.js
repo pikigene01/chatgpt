@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import WholeApp from "./pages/WholeApp";
 import {apihost} from "../src/services/api";
+import { AppProvider } from "./contexts/AppProvider";
 
 
 axios.defaults.baseURL = apihost;
@@ -37,6 +38,7 @@ function App() {
 
 
   return (
+    <AppProvider>
     <Router>
       <Routes>
         <Route exact path="/" element={<WholeApp appToView={appToView} />}/>
@@ -44,6 +46,7 @@ function App() {
         <Route exact path="*" element={<WholeApp appToView={appToView}/>}/>
        </Routes>
     </Router>
+    </AppProvider>
   );
 }
 

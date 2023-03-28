@@ -7,7 +7,7 @@ function ChatBot() {
 
 
   useEffect(() => {
-  alert(process.env.REACT_APP_OPENAI_API_KEY);
+  // alert(process.env.REACT_APP_OPENAI_API_KEY);
   }, [])
 
   const sendMessage = async () => {
@@ -40,16 +40,18 @@ function ChatBot() {
   };
 
   return (
-    <div>
-      <ul>
+    <div className='chatBotWrapper'>
+      <ul className='allmsgs' style={{height: '70%',overflow: 'hidden scroll',width: 'auto',padding: "30px"}}>
         {chatHistory.map((message, index) => (
           <li key={index} className={message.sender}>
             {message.text}
           </li>
         ))}
       </ul>
-      <input type="text" value={inputValue} onChange={event => setInputValue(event.target.value)} />
-      <button type="button" onClick={sendMessage}>Send</button>
+      <div className='inputs'>
+      <textarea placeholder='type here....' rows={'3'} type="text" value={inputValue} onChange={event => setInputValue(event.target.value)} />
+      <button className='btn-success' type="button" onClick={sendMessage}>Save / Request</button>
+      </div>
     </div>
   );
 }
