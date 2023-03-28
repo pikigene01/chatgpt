@@ -1,46 +1,9 @@
-import React, { useState,useEffect,useContext } from 'react';
-import axios from 'axios';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom'
 import { AppContext } from '../contexts/AppProvider';
 
 export default function Chats() {
-    const {user_icon} = useContext(AppContext);
-    const [chatHistory, setChatHistory] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-
-
-  useEffect(() => {
-  // alert(process.env.REACT_APP_OPENAI_API_KEY);
-  }, [])
-
-  const sendMessage = async () => {
-    // Add user message to chat history
-    setChatHistory([...chatHistory, { text: inputValue, sender: 'user' }]);
-    // Clear input value
-    setInputValue('');
-
-    try {
-      // Call OpenAI API to process message
-      const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-        prompt: inputValue + ' | List of options to choose from', // Customize the prompt with the user's input
-        max_tokens: 5,
-        n: 1,
-        stop: ['|'], // Use a delimiter to signal the end of the list of options
-      }, {
-        headers: {
-          'Authorization': 'Bearer ' + process.env.REACT_APP_OPENAI_API_KEY, // Your API key
-          'Content-Type': 'application/json'
-        }
-      });
-
-      // Parse the response and add to chat history
-      const options = response.data.choices[0].text.trim().split('|').map(option => option.trim());
-      setChatHistory([...chatHistory, { text: "Here are your options: " + options.join(', '), sender: 'bot' }]);
-    } catch (error) {
-      // Handle API error
-      setChatHistory([...chatHistory, { text: "Oops, something went wrong!", sender: 'bot' }]);
-    }
-  };
+    const {user_icon,chatHistory,sendMessage,setInputValue,inputValue} = useContext(AppContext);
 
   return (
          <div class="tyn-content tyn-content-full-height tyn-chatbot tyn-chatbot-page" style={{marginTop:"70px"}}>
@@ -128,6 +91,20 @@ export default function Chats() {
                             </div>
                             <div class="tyn-qa-message tyn-text-block"> what can you do for me ? </div>
                         </div>
+                            {chatHistory.map((message, index) => (
+                            <div class="tyn-qa-item" key={index}>
+                            <div class="tyn-qa-avatar">
+                                <div class="tyn-qa-avatar-wrap">
+                                    <div class="tyn-media tyn-size-md">
+                                        <img src="images/avatar/bot-1.jpg" alt=""/>
+                                     </div>
+                                </div>
+                            </div>
+                            <div class="tyn-qa-message tyn-text-block">
+                               {message.text}
+                               </div>
+                        </div>
+                            ))}
                         <div class="tyn-qa-item">
                             <div class="tyn-qa-avatar">
                                 <div class="tyn-qa-avatar-wrap">
@@ -159,7 +136,7 @@ export default function Chats() {
                             
                         </div>
                         <ul class="tyn-list-inline me-n2 my-1">
-                            <li><button class="btn btn-icon btn-white btn-md btn-pill">
+                            <li><button class="btn btn-icon btn-white btn-md btn-pill" onClick={sendMessage}>
                                     
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
                                         <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
