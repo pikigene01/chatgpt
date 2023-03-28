@@ -9,7 +9,9 @@ const AppContext = createContext();
 
   const sendMessage = async () => {
     // Add user message to chat history
-    setChatHistory([...chatHistory, { text: inputValue, sender: 'user' }]);
+     setChatHistory((prevData)=>{
+        return [...prevData, { text: inputValue, sender: 'user' }];
+      });
     // Clear input value
     setInputValue('');
 
@@ -29,10 +31,15 @@ const AppContext = createContext();
 
       // Parse the response and add to chat history
       const options = response.data.choices[0].text.trim().split('|').map(option => option.trim());
-      setChatHistory([...chatHistory, { text: "Here are your options: " + options.join(', '), sender: 'bot' }]);
+      setChatHistory((prevData)=>{
+        return [...prevData, { text: "Here are your options: " + options.join(', '), sender: 'bot' }];
+      });
     } catch (error) {
       // Handle API error
-      setChatHistory([...chatHistory, { text: "Oops, something went wrong!", sender: 'bot' }]);
+      setChatHistory((prevData)=>{
+        return [...prevData, { text: "Oops, something went wrong!", sender: 'bot' }];
+      });
+      
     }
   };
     const values = {

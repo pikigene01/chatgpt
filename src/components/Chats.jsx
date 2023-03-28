@@ -96,7 +96,7 @@ export default function Chats() {
                             <div class="tyn-qa-avatar">
                                 <div class="tyn-qa-avatar-wrap">
                                     <div class="tyn-media tyn-size-md">
-                                        <img src="images/avatar/bot-1.jpg" alt=""/>
+                                        <img src={message.sender == 'bot'?"images/avatar/bot-1.jpg":user_icon} alt=""/>
                                      </div>
                                 </div>
                             </div>
