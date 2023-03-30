@@ -50,12 +50,11 @@ function AppProvider({ children }) {
         },
         {
           headers: {
-            Authorization: "Bearer org-Flwe5v0e8363WItinv2AZw3t", // Your API key
+            Authorization: "Bearer " + process.env.REACT_APP_OPENAI_API_KEY, // Your API key
             "Content-Type": "application/json",
           },
         }
       );
-      // + process.env.REACT_APP_OPENAI_API_KEY
       // Parse the response and add to chat history
       const options = response.data.choices[0].text
         .trim()
