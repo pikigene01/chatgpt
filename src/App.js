@@ -25,15 +25,21 @@ function App() {
   const [appToView,setAppToView] = useState(()=>{
     let objectApp = {}
     const website = 'http://localhost:3000/'
-    var appName = (website.toString().split('.'));
+    const profile = window.location.toString().split('?');
+    let profile_name = "";
+    if(profile.length > 1){
+     profile_name = profile[1].toString().split('=')[1];
+    }
+    var appName = (profile_name.toString().split('.'));
     if(appName.length == 1){
     objectApp = {itsApp: false, appName: ''};
     return objectApp 
   
     }else{
-      objectApp = {itsApp: true, appName: appName[0].split('//')[1]}
+      objectApp = {itsApp: true, appName: appName[0].split('//')[1],url: profile[1]}
       return objectApp 
     }
+    return objectApp;
 });
 
 

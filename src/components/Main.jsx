@@ -5,7 +5,7 @@ export default function Main({appToView}) {
   return (
     <div className='main_app'>
 
-   <Chats/>
+   <Chats appToView={appToView}/>
     </div>
   )
 }

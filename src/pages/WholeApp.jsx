@@ -8,7 +8,7 @@ export default function WholeApp({appToView}) {
   return (
     <div>
             <>
-            <Header />
+            <Header appToView={appToView} />
             <Main appToView={appToView} />
             <Footer/>
             </>

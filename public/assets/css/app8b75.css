@@ -1120,6 +1120,9 @@ dl {
   overflow: auto;
   flex-grow: 1;
 }
+.tyn-chat-body-side{
+  height: 75vh;
+}
 .tyn-chat-form {
   display: flex;
   align-items: flex-end;
