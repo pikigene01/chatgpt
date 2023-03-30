@@ -54,9 +54,12 @@ function AppProvider({ children }) {
   }
   const clearChat = async(e) => {
     if(window.confirm('Are you sure you want to clear chat')){
-      setChatHistory([]);
       setInputValue("");
       setAppQuestion("What is your company name?");
+      setChatHistory([{
+        text: "What is your company name?",
+        sender: 'bot'
+      }]);
       setAppOptions([]);
       setProfileScore(0);
 

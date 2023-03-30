@@ -1,4 +1,4 @@
-export const apihost = "http://127.0.0.1:8000/";
+export const apihost = "http://localhost/wordpress/wp-admin/admin.php?page=riskcurb-app";
 const riskcurb_prefix = "api/";
 export const sockethost = "http://localhost:5000";
 
