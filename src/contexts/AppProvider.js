@@ -3,6 +3,8 @@ import user_icon from "../img/user.png";
 import riskcurb_logo from "../img/logo.jpg";
 import axios from "axios";
 import { OpenAIApi,Configuration } from "openai";
+import { apiDataPost } from "../services/apiRepository";
+import { apihost } from "../services/api";
 
 const AppContext = createContext();
 function AppProvider({ children }) {
@@ -36,7 +38,22 @@ function AppProvider({ children }) {
       let percentage = Math.floor((answered / questionAll) * 100);
       return (prevData = percentage);
     });
+ 
   }, [answered]);
+
+  useEffect(()=>{    
+    const getData = async()=>{
+      const data = {
+        apiData: 'hfeuhu'
+      }
+      let response = await apiDataPost(apihost,data);
+      if(response.status){
+        alert(response.message);
+      }
+    }
+    getData();
+    
+  },[])
 
   const createFramework = async (e) => {
     if(profileScore < 80){
