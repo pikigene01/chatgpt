@@ -10,6 +10,7 @@ export default function RiskFrameWork() {
     inputValue,
     componentToView,
     setComponentToView,
+    combinedDataUser,
   } = useContext(AppContext);
 
   return (
@@ -18,7 +19,7 @@ export default function RiskFrameWork() {
 
       <div class="tyn-chat-body m-4 rounded-3" data-simplebar>
         <div class="tyn-qa">
-          <p>There is no framework created yet!!</p>
+          <p>There is no framework created yet!! ({combinedDataUser})</p>
         </div>
       </div>
     </div>

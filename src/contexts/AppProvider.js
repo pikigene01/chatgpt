@@ -2,13 +2,23 @@ import React, { createContext, useState, useEffect } from "react";
 import user_icon from "../img/user.png";
 import riskcurb_logo from "../img/logo.jpg";
 import axios from "axios";
+import { OpenAIApi,Configuration } from "openai";
 
 const AppContext = createContext();
 function AppProvider({ children }) {
-  const [chatHistory, setChatHistory] = useState([]);
+  const configuration = new Configuration({
+   apiKey:process.env.REACT_APP_OPENAI_API_KEY
+  });
   const [inputValue, setInputValue] = useState("");
   const [appOptions, setAppOptions] = useState([]);
-  const [appQuestion, setAppQuestion] = useState("");
+  const [combinedDataUser,setCombinedDataUser] = useState("Data: ");
+  const [appQuestion, setAppQuestion] = useState("What is your company name?");
+  const [chatHistory, setChatHistory] = useState([
+    {
+      text: appQuestion,
+      sender: 'bot'
+    }
+  ]);
   const [componentToView, setComponentToView] = useState({
     main_app: true,
     settings: false,
@@ -18,6 +28,7 @@ function AppProvider({ children }) {
   const [questionAll, setQuestionsAll] = useState(20);
   const [answered, setAnswered] = useState(0);
   const [profileScore, setProfileScore] = useState(0);
+  const openai = new OpenAIApi(configuration);
 
   useEffect(() => {
     if (!answered) return () => {};
@@ -26,6 +37,31 @@ function AppProvider({ children }) {
       return (prevData = percentage);
     });
   }, [answered]);
+
+  const createFramework = async (e) => {
+    if(profileScore < 80){
+      alert('you can not create a framework with profile under 80%');
+     return ()=>{}
+    }
+
+    let combinedData = "";
+
+    chatHistory.map((chat)=>{
+      combinedData += ` ${chat.text}`;
+    });
+    setCombinedDataUser(combinedData);
+
+  }
+  const clearChat = async(e) => {
+    if(window.confirm('Are you sure you want to clear chat')){
+      setChatHistory([]);
+      setInputValue("");
+      setAppQuestion("What is your company name?");
+      setAppOptions([]);
+      setProfileScore(0);
+
+    }
+  }
 
   const sendMessage = async () => {
     // Add user message to chat history
@@ -40,26 +76,18 @@ function AppProvider({ children }) {
 
     try {
       // Call OpenAI API to process message
-      const response = await axios.post(
-        "https://api.openai.com/v1/engines/davinci-codex/completions",
-        {
-          prompt: inputValue + " | List of options to choose from", // Customize the prompt with the user's input
-          max_tokens: 5,
-          n: 1,
-          stop: ["|"], // Use a delimiter to signal the end of the list of options
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + process.env.REACT_APP_OPENAI_API_KEY, // Your API key
-            "Content-Type": "application/json",
-          },
-        }
-      );
+     let response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: inputValue,
+      temperature: 0.5,
+      max_tokens: 100,
+     });
       // Parse the response and add to chat history
       const options = response.data.choices[0].text
         .trim()
         .split("|")
         .map((option) => option.trim());
+
       setChatHistory((prevData) => {
         return [
           ...prevData,
@@ -79,9 +107,7 @@ function AppProvider({ children }) {
       });
     }
   };
-  const createFramework = async () => {
-    alert('you want to create framework');
-  }
+ 
   const values = {
     user_icon,
     chatHistory,
@@ -96,6 +122,8 @@ function AppProvider({ children }) {
     appOptions,
     appQuestion,
     createFramework,
+    clearChat,
+    combinedDataUser,
   };
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
 }

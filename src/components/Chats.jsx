@@ -17,6 +17,7 @@ export default function Chats({ appToView }) {
     setComponentToView,
     profileScore,
     createFramework,
+    clearChat,
   } = useContext(AppContext);
 
   return (
@@ -47,7 +48,8 @@ export default function Chats({ appToView }) {
                 <Link
                   class="btn btn-icon btn-light btn-md btn-pill"
                   to={"/?" + appToView?.url}
-                  onClick={()=>createFramework}
+                  onClick={(e)=>createFramework(e)}
+                  title="create framework"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -85,16 +87,7 @@ export default function Chats({ appToView }) {
                 </div>
               </div>
             </li>
-            <li
-              class="tyn-aside-item js-toggle-main"
-              onClick={() => setComponentToView({ settings: true })}
-            >
-              <div class="tyn-media-group">
-                <div class="tyn-media-col">
-                  <div class="content">Settings</div>
-                </div>
-              </div>
-            </li>
+           
             <li
               class="tyn-aside-item js-toggle-main"
               onClick={() => setComponentToView({ framework: true })}
@@ -115,13 +108,23 @@ export default function Chats({ appToView }) {
                 </div>
               </div>
             </li>
+            <li
+              class="tyn-aside-item js-toggle-main"
+              onClick={() => setComponentToView({ settings: true })}
+            >
+              <div class="tyn-media-group">
+                <div class="tyn-media-col">
+                  <div class="content">Settings</div>
+                </div>
+              </div>
+            </li>
           </ul>
         </div>
         <div class="tyn-aside-foot">
           <div class="w-100">
             <ul class="row gx-3">
               <li class="col-6">
-                <button class="btn btn-light tyn-size-lg w-100 flex-column py-2 pt-3">
+                <button class="btn btn-light tyn-size-lg w-100 flex-column py-2 pt-3" onClick={(e)=>clearChat(e)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
