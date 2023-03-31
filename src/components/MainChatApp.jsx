@@ -11,6 +11,7 @@ export default function MainChatApp({ hide }) {
     componentToView,
     setComponentToView,
     appQuestion,
+    appOptions,
   } = useContext(AppContext);
 
   return (
@@ -96,39 +97,34 @@ export default function MainChatApp({ hide }) {
                   alignItems: "center",
                 }}
               >
+                {appOptions.map((data,i)=>{
+                  return (
+                    <li
+                    key={i}
+                    style={{
+                      cursor: "pointer",
+                      padding: "10px",
+                      border: "1px solid #333",
+                      margin: "5px 0",
+                    }}
+                    onClick={(e) => setInputValue(e.target.innerHTML)}
+                  >
+                    {data}
+                  </li>
+                  );
+                })}
+               {appOptions.length < 1 && (
                 <li
-                  style={{
-                    cursor: "pointer",
-                    padding: "10px",
-                    border: "1px solid #333",
-                    margin: "5px 0",
-                  }}
-                  onClick={(e) => setInputValue(e.target.innerHTML)}
-                >
-                  Option 1
-                </li>
-                <li
-                  style={{
-                    cursor: "pointer",
-                    padding: "10px",
-                    border: "1px solid #333",
-                    margin: "5px 0",
-                  }}
-                  onClick={(e) => setInputValue(e.target.innerHTML)}
-                >
-                  Option 2
-                </li>
-                <li
-                  style={{
-                    cursor: "pointer",
-                    padding: "10px",
-                    border: "1px solid #333",
-                    margin: "5px 0",
-                  }}
-                  onClick={(e) => setInputValue(e.target.innerHTML)}
-                >
-                  Option 3
-                </li>
+                style={{
+                  cursor: "pointer",
+                  padding: "10px",
+                  border: "1px solid #333",
+                  margin: "5px 0",
+                }}
+              >
+               No Options
+              </li>
+               )}
               </ol>
             </div>
           </div>

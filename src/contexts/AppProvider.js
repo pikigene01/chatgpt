@@ -3,17 +3,18 @@ import user_icon from "../img/user.png";
 import riskcurb_logo from "../img/logo.jpg";
 import axios from "axios";
 import { OpenAIApi,Configuration } from "openai";
-import { apiDataPost } from "../services/apiRepository";
-import { apihost } from "../services/api";
+import { apiDataPost, apiDataPostForm } from "../services/apiRepository";
+import { apihost, loadApi } from "../services/api";
 
 const AppContext = createContext();
-function AppProvider({ children }) {
+function AppProvider({ children,appToView }) {
   const configuration = new Configuration({
    apiKey:process.env.REACT_APP_OPENAI_API_KEY
   });
   const [inputValue, setInputValue] = useState("");
   const [appOptions, setAppOptions] = useState([]);
   const [combinedDataUser,setCombinedDataUser] = useState("Data: ");
+  const [loading,setLoading] = useState(true);
   const [appQuestion, setAppQuestion] = useState("What is your company name?");
   const [chatHistory, setChatHistory] = useState([
     {
@@ -39,21 +40,178 @@ function AppProvider({ children }) {
       return (prevData = percentage);
     });
  
-  }, [answered]);
+  }, [answered,profileScore]);
 
   useEffect(()=>{    
     const getData = async()=>{
-      const data = {
-        apiData: 'hfeuhu'
+     const data = {
+      apiData: "geneclient",
+      belongs: appToView?.appName
+     }
+   //grab chathistory, client score, combined data
+      let response = await apiDataPostForm(loadApi,data);
+      if(response){
+        setLoading(false);
       }
-      let response = await apiDataPost(apihost,data);
-      if(response.status){
-        alert(response.message);
+      if(response.status == 200){
+        console.log(response.profileScore);
+        setProfileScore(JSON.parse(response.profileScore));
+        setChatHistory(JSON.parse(response.chatHistory));
+        setCombinedDataUser(JSON.parse(response.combinedDataUser));
+        setAppOptions(JSON.parse(response.appOptions));
+        setAppQuestion(JSON.parse(response.appQuestion));
+        setAnswered(JSON.parse(response.answered));
+      }else if(response.status == 404){
+        setLoading(false);
+
+      }else{
+        setLoading(false);
       }
     }
     getData();
     
-  },[])
+  },[]);
+
+  useEffect(()=>{
+    chatHistoryApi();
+  },[chatHistory]);
+
+  const chatHistoryApi = async ()=>{
+    if(loading) return ()=>{}
+    let fetchStatus = "";
+    if(chatHistory.length > 0){
+      fetchStatus = "update";
+    }else{
+      fetchStatus = "add";
+    }
+
+    const data = {
+      status: fetchStatus,
+      belongs: appToView?.appName,
+      chatHistory: JSON.stringify(chatHistory),
+    }
+    let response = await apiDataPostForm(loadApi,data);
+    // return ()=>{}
+    if(response?.status == 200){
+      // setChatHistory(JSON.parse(response?.chatHistory));
+    }
+  }
+  useEffect(()=>{
+    answeredApi();
+  },[answered]);
+  const answeredApi = async ()=>{
+    if(loading) return ()=>{}
+    let fetchStatus = "";
+    if(answered !== ""){
+      fetchStatus = "update";
+    }else{
+      fetchStatus = "add";
+    }
+
+    const data = {
+      status: fetchStatus,
+      belongs: appToView?.appName,
+      answered: JSON.stringify(answered),
+    }
+    let response = await apiDataPostForm(loadApi,data);
+    // return ()=>{}
+    if(response?.status == 200){
+      // setAnswered(JSON.parse(response?.answered));
+    }
+  }
+useEffect(()=>{
+  profileScoreApi();
+},[profileScore]);
+
+  const profileScoreApi = async ()=>{
+    if(loading) return ()=>{}
+
+    let fetchStatus = "";
+    if(profileScore !== ""){
+      fetchStatus = "update";
+    }else{
+      fetchStatus = "add";
+    }
+
+    const data = {
+      status: fetchStatus,
+      belongs: appToView?.appName,
+      profileScore: JSON.stringify(profileScore),
+    }
+    let response = await apiDataPostForm(loadApi,data);
+    if(response?.status == 200){
+      // setProfileScore(JSON.parse(response?.profileScore));
+    }
+  }
+
+  useEffect(()=>{
+    addQuestionApi();
+  },[appQuestion])
+  const addQuestionApi = async ()=>{
+      if(loading) return ()=>{}
+    let fetchStatus = "";
+    if(appQuestion !== ""){
+      fetchStatus = "update";
+    }else{
+      fetchStatus = "add";
+    }
+
+    const data = {
+      status: fetchStatus,
+      belongs: appToView?.appName,
+      appQuestion: JSON.stringify(appQuestion),
+    }
+    let response = await apiDataPostForm(loadApi,data);
+    if(response?.status == 200){
+      setAppQuestion(JSON.parse(response?.appQuestion));
+    }
+  }
+  useEffect(()=>{
+    appOptionsApi();
+  },[appOptions]);
+  const appOptionsApi = async ()=>{
+    if(loading) return ()=>{}
+
+    let fetchStatus = "";
+    if(appOptions.length > 0){
+      fetchStatus = "update";
+    }else{
+      fetchStatus = "add";
+    }
+
+    const data = {
+      status: fetchStatus,
+      belongs: appToView?.appName,
+      appOptions: JSON.stringify(appOptions),
+    }
+    let response = await apiDataPostForm(loadApi,data);
+    if(response?.status == 200){
+      setAppOptions(JSON.parse(response?.appOptions));
+    }
+  }
+  useEffect(()=>{
+    combinedDataUserApi();
+  },[combinedDataUser]);
+  const combinedDataUserApi = async ()=>{
+    if(loading) return ()=>{}
+
+    let fetchStatus = "";
+    if(appOptions.length > 0){
+      fetchStatus = "update";
+    }else{
+      fetchStatus = "add";
+    }
+
+    const data = {
+      status: fetchStatus,
+      belongs: appToView?.appName,
+      combinedDataUser: JSON.stringify(combinedDataUser),
+    }
+    let response = await apiDataPostForm(loadApi,data);
+    if(response?.status == 200){
+      // setCombinedDataUser(JSON.parse(response?.combinedDataUser));
+    }
+  }
 
   const createFramework = async (e) => {
     if(profileScore < 80){
@@ -144,6 +302,7 @@ function AppProvider({ children }) {
     createFramework,
     clearChat,
     combinedDataUser,
+    appOptions,
   };
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
 }

@@ -44,7 +44,7 @@ function App() {
 
 
   return (
-    <AppProvider>
+    <AppProvider appToView={appToView}>
     <Router>
       <Routes>
         <Route exact path="/" element={<WholeApp appToView={appToView} />}/>

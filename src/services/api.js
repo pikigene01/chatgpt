@@ -1,23 +1,6 @@
-export const apihost = "http://localhost/wordpress/wp-admin/admin.php?page=riskcurb-app";
-const riskcurb_prefix = "api/";
+export const apihost = "http://localhost/wordpress/";
+const riskcurb_prefix = "wp-content/plugins/";
 export const sockethost = "http://localhost:5000";
 
-export const registerapi = `${riskcurb_prefix}register`;
-export const loginapi = `${riskcurb_prefix}login`;
-export const changepasswordapi = `${riskcurb_prefix}changePassword/user`;
-export const createAppUrl = `${riskcurb_prefix}create/user/app`;
-export const getDataSites = `${riskcurb_prefix}get/data/app`;
-export const getSubscriptions = `${riskcurb_prefix}subscriptions/get`;
-export const saveProfile = `${riskcurb_prefix}profile/save`;
-export const getProfile = `${riskcurb_prefix}profile/get`;
-export const checkSiteName = `${riskcurb_prefix}check/sitenameavailability`;
+export const loadApi = `${riskcurb_prefix}riskcurb_wordpress_shortcodes/includes/plugin_api/index.php`;
 
-//end of main app api
-
-
-//start clients api 
-
-export const client_host = 'http://localhost/riskcurb_clients/';
-export const login_clientapi = `${client_host}login.php`;
-export const register_clientapi = `${client_host}register.php`;
-export const create_dbapi = `${client_host}create.php`;
