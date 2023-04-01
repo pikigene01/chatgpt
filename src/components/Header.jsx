@@ -181,7 +181,7 @@ export default function Header({ appToView }) {
           textAlign:"center"
         }}
       >
-        <p>Your Score: {profileScore + " %"} </p>
+        <p>Profile Score: {profileScore + " %"} </p>
       </div>
       </nav>
        <div style={{marginTop: "90px",}}>

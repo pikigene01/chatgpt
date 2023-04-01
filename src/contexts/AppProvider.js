@@ -16,6 +16,9 @@ function AppProvider({ children,appToView }) {
   const [combinedDataUser,setCombinedDataUser] = useState("Data: ");
   const [loading,setLoading] = useState(true);
   const [appQuestion, setAppQuestion] = useState("What is your company name?");
+  const [questions,setQuestions] = useState([
+    "What is your company name?", "Location of Head Office: ", "Type Of Organization: ","Size Of Organization: ","Risk You might face: "
+  ]);
   const [chatHistory, setChatHistory] = useState([
     {
       text: appQuestion,
@@ -28,13 +31,17 @@ function AppProvider({ children,appToView }) {
     framework: false,
     management: false,
   });
-  const [questionAll, setQuestionsAll] = useState(20);
+  const [questionAll, setQuestionsAll] = useState(10);
   const [answered, setAnswered] = useState(0);
   const [profileScore, setProfileScore] = useState(0);
   const openai = new OpenAIApi(configuration);
 
   useEffect(() => {
     if (!answered) return () => {};
+    if(profileScore >= 100) return()=>{}
+    setAppQuestion(questions[answered]);
+    setQuestionsAll(questions?.length);
+
     setProfileScore((prevData) => {
       let percentage = Math.floor((answered / questionAll) * 100);
       return (prevData = percentage);
@@ -116,7 +123,7 @@ function AppProvider({ children,appToView }) {
     let response = await apiDataPostForm(loadApi,data);
     // return ()=>{}
     if(response?.status == 200){
-      // setAnswered(JSON.parse(response?.answered));
+      setAnswered(JSON.parse(response?.answered));
     }
   }
 useEffect(()=>{
@@ -140,7 +147,7 @@ useEffect(()=>{
     }
     let response = await apiDataPostForm(loadApi,data);
     if(response?.status == 200){
-      // setProfileScore(JSON.parse(response?.profileScore));
+      setProfileScore(JSON.parse(response?.profileScore));
     }
   }
 
@@ -236,6 +243,7 @@ useEffect(()=>{
         sender: 'bot'
       }]);
       setAppOptions([]);
+      setAnswered(0);
       setProfileScore(0);
 
     }
@@ -251,7 +259,6 @@ useEffect(()=>{
     setAnswered((prevData) => {
       return (prevData += 1);
     });
-
     try {
       // Call OpenAI API to process message
      let response = await openai.createCompletion({
@@ -270,6 +277,10 @@ useEffect(()=>{
         return [
           ...prevData,
           {
+            text: `${appQuestion}: ${inputValue}`,
+            sender: "user",
+          },
+          {
             text: "Here are your options: " + options.join(", "),
             sender: "bot",
           },
@@ -280,6 +291,10 @@ useEffect(()=>{
       setChatHistory((prevData) => {
         return [
           ...prevData,
+          {
+            text: `${appQuestion}: ${inputValue}`,
+            sender: "user",
+          },
           { text: "Oops, something went wrong!", sender: "bot" },
         ];
       });
